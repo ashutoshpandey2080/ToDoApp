@@ -26,10 +26,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    date : {
-        type: Date,
-        default: Date.now
-    }
+    Todos: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Todo"
+    }]
 },{timestamps: true});
 
 const User = mongoose.model("User", userSchema);
