@@ -1,10 +1,9 @@
-import express from 'express';  // Import express for creating the server
-import { apiRouter, apiProtected } from './routes/api.js';  // Import API routes
-import cors from 'cors';  // Import CORS to handle cross-origin requests
-import mongoose from 'mongoose';  // Import Mongoose to interact with MongoDB
-import dotenv from 'dotenv';  // Import dotenv to handle environment variables
-import AuthMiddleware from './middlewares/AuthMiddleware.js';
-
+import express from "express";
+import { apiRouter, apiProtected } from "./routes/api.js";
+import cors from "cors";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import AuthMiddleware from "./middlewares/AuthMiddleware.js";
 
 // Load environment variables from a .env file
 dotenv.config();
@@ -12,31 +11,28 @@ dotenv.config();
 // Create an Express app
 const app = express();
 
-// Connect to MongoDB using the connection string from environment variables
-mongoose.connect(process.env.MONGO_URL)
-    .then(() => {
-        console.log("Connected to MongoDB");
-
-        // Start the server only after the database connection is successful
-        app.listen(PORT, () =>  {
-            console.log(`Server is running on port ${PORT}`);
-        });
-    })
-    .catch(err => {
-        console.error("Failed to connect to MongoDB:", err);
-    });
-
 // Define the port the server will run on
 const PORT = 3000;
 
 // Middleware to parse incoming JSON request payloads
 app.use(express.json());
+app.use(cors()); // CORS
 
-// Middleware to handle CORS (currently commented out)
-// app.use(cors());
-
-// Set up the API routes
+// Set up unprotected API routes (public routes like login/register)
 app.use("/api/", apiRouter);
+
+// Set up protected API routes (use AuthMiddleware for routes that need authentication)
 app.use("/api/", AuthMiddleware, apiProtected);
 
-// Route for user registration (could be moved to apiRouter)
+// Connect to MongoDB using the connection string from environment variables
+mongoose
+    .connect(process.env.MONGO_URL)
+    .then(() => {
+        console.log("Connected to MongoDB");
+        app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+        });
+    })
+    .catch((err) => {
+        console.error("Failed to connect to MongoDB:", err);
+    });

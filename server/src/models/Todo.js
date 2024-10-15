@@ -14,10 +14,10 @@ const todoSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    status: {
-        type: String,
+    isComplete: {
+        type: Boolean,
         required: true,
-        default: "Incomplete"
+        default: false
     },
     createdAt: {
         type: Date,

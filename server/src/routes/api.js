@@ -7,6 +7,8 @@ import { CreateTodo } from '../controllers/TodoController.js';
 import TodoSchema from '../validationSchema/TodoSchema.js';
 import { TodoList } from '../controllers/TodoList.js';
 import { MarkTodo }  from '../controllers/MarkTodoController.js';
+import { check } from 'express-validator';
+import { RemoveTodo } from '../controllers/RemoveTodoController.js';
 
 
 // Create a new router for handling API routes
@@ -17,9 +19,14 @@ export const apiProtected = express.Router();
 // The RegisterSchema middleware validates the incoming request data
 // The Register controller handles the logic for user registration
 apiRouter.post('/register', RegisterSchema, Register);
-apiRouter.get('/login', LoginSchema , Login);
+apiRouter.post('/login', LoginSchema , Login);
 
 //Protected Route
 apiProtected.post('/createTodo', TodoSchema , CreateTodo);
 apiProtected.get('/todolist', TodoList);
-apiProtected.post('/markTodo', MarkTodo);
+apiProtected.post('/markTodo',
+    [check('todoId').exists().withMessage('TodoId is required')], 
+    MarkTodo);
+apiProtected.post('/removeTodo',
+    [check('todoId').exists().withMessage('TodoId is required')], 
+    RemoveTodo);

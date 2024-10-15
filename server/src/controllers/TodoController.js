@@ -14,7 +14,6 @@ export const CreateTodo = async (req, res) => {
                 description: req.body.description,
                 deadline: req.body.deadline
             })
-            console.log(todo);
             const result = await todo.save();
             if(result){
                 const user = await User.findOneAndUpdate({_id: req.userId}, {$push: {Todos: result._id}});
